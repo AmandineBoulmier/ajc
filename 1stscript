@@ -1,0 +1,42 @@
+$serv_name = Read-Host "Veuillez saisir le nom du service "
+$serv_list = get-service *$serv_name*
+if ($serv_list.count -gt 0)
+{
+    write-host "Voici les services trouvés :"
+    for ($i=0;$i -lt $serv_list.count; $i++)
+    {
+        $y=$i+1
+        if ($serv_list[$i].Status -eq "stopped")
+        {
+            $color = "red"
+        }
+        else
+        {
+            $color = "green"
+        }
+        write-host [$y] $serv_list[$i] `n "   Status :" $serv_list[$i].Status -ForegroundColor $color
+    }
+    $choice = read-host "Veuillez sélectionner un numéro de service "
+    $get_serv = Get-Service $choice[$i]
+    $state = $get_serv.Status
+    if ($state -eq "running")
+    {
+        $action = Read-Host "Voulez-vous arrêter le service ? [O/n] "
+        if ($action -match "O")
+        {
+            Stop-Service $get_serv -verbose
+        }
+    }
+    else
+    {
+        $action2 = Read-Host "Voulez-vous démarrer le service ? [O/n] "
+        if ($action2 -match "O")
+        {
+            Start-Service $get_serv -verbose
+        }
+    }
+}
+elseif ($serv_list.count -eq 0)
+{
+    write-host "Le service n'a pas été trouvé"
+}
